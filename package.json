@@ -1,0 +1,29 @@
+{
+  "name": "lz-promise",
+  "version": "0.1.0",
+  "description": "Lazy evaluation for asynchronous operations",
+  "main": "build/lz_promise.js",
+  "scripts": {
+    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmsmacdonald/lz-promise.git"
+  },
+  "author": "William MacDonald",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wmsmacdonald/lz-promise/issues"
+  },
+  "homepage": "https://github.com/wmsmacdonald/lz-promise#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/sinon": "^5.0.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "sinon": "^6.1.4",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  }
+}
