@@ -3,8 +3,9 @@
     "outFile": "build/lz_promise.js",
     "sourceMap": true,
     "lib": [
-      "es2015"
-    ]
+      "es2018"
+    ],
+    "module": "umd"
   },
   "include": [
     "src/**/*"
