@@ -1,6 +1,6 @@
 export class LazyPromise<T> extends Function {
-  promise: Promise<T> = null;
-  promiseCreator: () => Promise<T>;
+  private promise: Promise<T> = null;
+  private readonly promiseCreator: () => Promise<T>;
 
   constructor(
     executor: (

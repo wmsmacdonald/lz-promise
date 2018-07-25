@@ -2,16 +2,20 @@ import { lz, LazyPromise } from "./lzPromise";
 import * as sinon from "sinon";
 import { expect } from "chai";
 
-describe("lz", () => {
-  it("should only call once after two evaluations", async () => {
-    const fake = sinon.fake.returns(Promise.resolve("result"));
+describe("LazyPromise", () => {
+  describe('constructor', () => {
+    it("should only call once after two evaluations", async () => {
+      const fake = sinon.fake(resolve => resolve('result'));
 
-    const lazyValue = lz(fake);
+      const lazyValue = new LazyPromise(fake);
 
-    await lazyValue();
-    await lazyValue();
+      expect(fake.callCount).to.equal(0);
 
-    expect(fake.callCount).to.equal(1);
+      await lazyValue();
+      await lazyValue();
+
+      expect(fake.callCount).to.equal(1);
+    });
   });
 
   describe("then", () => {
