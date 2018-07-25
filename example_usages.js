@@ -22,14 +22,14 @@ export const lz = promiseCreator => {
 }
 
 async function withLazy() {
-  const lazyValue1 = once(() => costlyApiCall1());
-  const lazyValue2 = once(() => costlyApiCall2());
+  const lazyValue1 = lz(() => costlyApiCall1());
+  const lazyValue2 = lz(() => costlyApiCall2());
 
   const lazyTotal = () => Promise.all([lazyValue1(), lazyValue2()]).then(([v1, v2]) => v1 + v2);
 
   if (x) {
     // result of costlyApiCall1() is stored for next lazy usage
-    console.log(await lazyValue1());
+    console.log(await lazyValue1);
   }
 
   if (y) {

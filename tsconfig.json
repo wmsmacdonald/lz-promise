@@ -6,7 +6,8 @@
       "es2018"
     ],
     "module": "umd",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "target": "es5"
   },
   "include": [
     "src/**/*"

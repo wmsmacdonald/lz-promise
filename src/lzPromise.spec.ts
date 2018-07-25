@@ -11,8 +11,9 @@ describe("LazyPromise", () => {
 
       expect(fake.callCount).to.equal(0);
 
-      await lazyValue();
-      await lazyValue();
+      const value = await lazyValue;
+      expect(value).to.equal('result');
+      await lazyValue;
 
       expect(fake.callCount).to.equal(1);
     });
@@ -27,7 +28,9 @@ describe("LazyPromise", () => {
         return "changedResult";
       });
 
-      const changedValue: string = await lazyChangedValue();
+      LazyPromise.all<number, number>()
+
+      const changedValue: string = await lazyChangedValue;
       expect(changedValue).to.equal("changedResult");
     });
   });

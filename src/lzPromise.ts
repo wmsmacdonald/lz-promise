@@ -1,19 +1,26 @@
-export class LazyPromise<T> extends Function {
+/* class decorator */
+function staticImplements<T>() {
+  return (constructor: T) => {}
+}
+
+@staticImplements<PromiseConstructor>()
+export class LazyPromise<T> implements Promise<T> {
   private promise: Promise<T> = null;
   private readonly promiseCreator: () => Promise<T>;
 
+  /**
+   * Creates a new Promise.
+   * @param executor A callback used to initialize the promise. This callback is passed two arguments:
+   * a resolve callback used resolve the promise with a value or the result of another promise,
+   * and a reject callback used to reject the promise with a provided reason or error.
+   */
   constructor(
     executor: (
       resolve: (value?: T | PromiseLike<T>) => void,
       reject: (reason?: any) => void
     ) => void
   ) {
-    super();
     this.promiseCreator = () => new Promise(executor);
-
-    return <LazyPromise<T>>new Proxy(this, {
-      apply: () => this.force()
-    });
   }
 
   static fromPromiseCreator<T>(promiseCreator: () => Promise<T>) {
@@ -22,7 +29,7 @@ export class LazyPromise<T> extends Function {
     });
   }
 
-  force = (): Promise<T> => {
+  execute = (): Promise<T> => {
     if (!this.promise) {
       this.promise = this.promiseCreator();
     }
@@ -38,21 +45,16 @@ export class LazyPromise<T> extends Function {
       | ((reason: any) => TResult2 | PromiseLike<TResult2>)
       | undefined
       | null
-  ): LazyPromise<TResult1 | TResult2> =>
-    LazyPromise.fromPromiseCreator(() =>
-      this.force().then(onFulfilled, onRejected)
-    );
+  ): Promise<TResult1 | TResult2> => this.execute().then(onFulfilled, onRejected);
 
   catch = <TResult = never>(
     onRejected?:
       | ((reason: any) => TResult | PromiseLike<TResult>)
       | undefined
       | null
-  ): LazyPromise<T | TResult> =>
-    LazyPromise.fromPromiseCreator(() => this.force().catch(onRejected));
+  ): Promise<T | TResult> => this.execute().catch(onRejected);
 
-  finally = (onFinally?: (() => void) | undefined | null): LazyPromise<T> =>
-    LazyPromise.fromPromiseCreator<T>(() => this.force().finally(onFinally));
+  finally = (onFinally?: (() => void) | undefined | null): Promise<T> => this.execute().finally(onFinally);
 
   static resolve<T>(value?: T | LazyPromise<T>): LazyPromise<T> {
     return LazyPromise.fromPromiseCreator(() => Promise.resolve(value));
@@ -62,17 +64,35 @@ export class LazyPromise<T> extends Function {
     return LazyPromise.fromPromiseCreator(() => Promise.reject(reason));
   }
 
-  static all<T>(values: (T | LazyPromise<T>)[]): LazyPromise<T[]> {
-    return LazyPromise.fromPromiseCreator(() =>
-      Promise.all(values.map(LazyPromise.resolve))
-    );
+  static all<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>, T10 | PromiseLike<T10>]): Promise<[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]>;
+  static all<T1, T2, T3, T4, T5, T6, T7, T8, T9>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>]): Promise<[T1, T2, T3, T4, T5, T6, T7, T8, T9]>;
+  static all<T1, T2, T3, T4, T5, T6, T7, T8>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>]): Promise<[T1, T2, T3, T4, T5, T6, T7, T8]>;
+  static all<T1, T2, T3, T4, T5, T6, T7>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>]): Promise<[T1, T2, T3, T4, T5, T6, T7]>;
+  static all<T1, T2, T3, T4, T5, T6>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>]): Promise<[T1, T2, T3, T4, T5, T6]>;
+  static all<T1, T2, T3, T4, T5>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>]): Promise<[T1, T2, T3, T4, T5]>;
+  static all<T1, T2, T3, T4>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>]): Promise<[T1, T2, T3, T4]>;
+  static all<T1, T2, T3>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>]): Promise<[T1, T2, T3]>;
+  static all<T1, T2>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>]): Promise<[T1, T2]>;
+  static all<TAll>(values: Iterable<TAll | PromiseLike<TAll>>): Promise<TAll[]> {
+    return LazyPromise.fromPromiseCreator(() => Promise.all(values));
   }
 
-  static race<T>(values: (T | PromiseLike<T>)[]): LazyPromise<T> {
-    return LazyPromise.fromPromiseCreator(() =>
-      Promise.race(values.map(LazyPromise.resolve))
-    );
+  static race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>, T10 | PromiseLike<T10>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
+  static race<T1, T2, T3, T4, T5, T6, T7, T8, T9>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
+  static race<T1, T2, T3, T4, T5, T6, T7, T8>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
+  static race<T1, T2, T3, T4, T5, T6, T7>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
+  static race<T1, T2, T3, T4, T5, T6>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>]): Promise<T1 | T2 | T3 | T4 | T5 | T6>;
+  static race<T1, T2, T3, T4, T5>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>]): Promise<T1 | T2 | T3 | T4 | T5>;
+  static race<T1, T2, T3, T4>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>]): Promise<T1 | T2 | T3 | T4>;
+  static race<T1, T2, T3>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>]): Promise<T1 | T2 | T3>;
+  static race<T1, T2>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>]): Promise<T1 | T2>;
+  static race<T>(values: (T | PromiseLike<T>)[]): Promise<T>;
+  static race<T>(values: Iterable<T | PromiseLike<T>>): Promise<T> {
+    return LazyPromise.fromPromiseCreator(() => Promise.race(values));
   }
+
+  readonly [Symbol.toStringTag]: "Promise";
+  static readonly [Symbol.species]: PromiseConstructor;
 }
 
 export function lz<T>(promiseCreator: () => Promise<T>) {
