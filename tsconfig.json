@@ -5,7 +5,8 @@
     "lib": [
       "es2018"
     ],
-    "module": "umd"
+    "module": "umd",
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*"

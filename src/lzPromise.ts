@@ -1,66 +1,80 @@
-type GenericHandler = (results: Array<any>) => any | Promise<any>;
+export class LazyPromise<T> extends Function {
+  promise: Promise<T> = null;
+  promiseCreator: () => Promise<T>;
 
-export class LazyPromise {
-  static join<R1>(
-    arg1: any | Promise<R1>,
-    handler: (R1) => Promise<any> | any
-  ): InvokableLazyPromise<[R1]>;
-  static join<R1, R2>(
-    arg1: any | Promise<R1>,
-    arg2: any | Promise<R2>,
-    handler: (R1, R2) => Promise<any> | any
-  ): InvokableLazyPromise<[R1, R2]>;
-  static join<R1, R2, R3>(
-    arg1: any | Promise<R1>,
-    arg2: any | Promise<R2>,
-    arg3: any | Promise<R3>,
-    handler: (R1, R2, R3) => Promise<any> | any
-  ): InvokableLazyPromise<[R1, R2, R3]>;
-  static join<R1, R2, R3, R4>(
-    arg1: any | Promise<R1>,
-    arg2: any | Promise<R2>,
-    arg3: any | Promise<R3>,
-    arg4: any | Promise<R4>,
-    handler: (R1, R2, R3, R4) => Promise<any> | any
-  ): InvokableLazyPromise<[R1, R2, R3, R4]>;
-  static join<R1, R2, R3, R4, R5>(
-    arg1: any | Promise<R1>,
-    arg2: any | Promise<R2>,
-    arg3: any | Promise<R3>,
-    arg4: any | Promise<R4>,
-    arg5: any | Promise<R5>,
-    handler: (R1, R2, R3, R4, R5) => Promise<any> | any
-  ): InvokableLazyPromise<[R1, R2, R3, R4, R5]>;
+  constructor(
+    executor: (
+      resolve: (value?: T | PromiseLike<T>) => void,
+      reject: (reason?: any) => void
+    ) => void
+  ) {
+    super();
+    this.promiseCreator = () => new Promise(executor);
 
-  static join(...args: Array<any | Promise<any> | GenericHandler>) {
-    const handler = args[args.length - 1];
-    const lazyAllPromises = lz(() => Promise.all(args.slice(0, -1)));
-    return lazyAllPromises.then(results => handler(...results));
+    return <LazyPromise<T>>new Proxy(this, {
+      apply: () => this.force()
+    });
+  }
+
+  static fromPromiseCreator<T>(promiseCreator: () => Promise<T>) {
+    return new LazyPromise<T>((resolve, reject) => {
+      promiseCreator().then(resolve, reject);
+    });
+  }
+
+  force = (): Promise<T> => {
+    if (!this.promise) {
+      this.promise = this.promiseCreator();
+    }
+    return this.promise;
+  };
+
+  then = <TResult1 = T, TResult2 = never>(
+    onFulfilled?:
+      | ((value: T) => TResult1 | PromiseLike<TResult1>)
+      | undefined
+      | null,
+    onRejected?:
+      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+      | undefined
+      | null
+  ): LazyPromise<TResult1 | TResult2> =>
+    LazyPromise.fromPromiseCreator(() =>
+      this.force().then(onFulfilled, onRejected)
+    );
+
+  catch = <TResult = never>(
+    onRejected?:
+      | ((reason: any) => TResult | PromiseLike<TResult>)
+      | undefined
+      | null
+  ): LazyPromise<T | TResult> =>
+    LazyPromise.fromPromiseCreator(() => this.force().catch(onRejected));
+
+  finally = (onFinally?: (() => void) | undefined | null): LazyPromise<T> =>
+    LazyPromise.fromPromiseCreator<T>(() => this.force().finally(onFinally));
+
+  static resolve<T>(value?: T | LazyPromise<T>): LazyPromise<T> {
+    return LazyPromise.fromPromiseCreator(() => Promise.resolve(value));
+  }
+
+  static reject<T = never>(reason?: any): LazyPromise<T> {
+    return LazyPromise.fromPromiseCreator(() => Promise.reject(reason));
+  }
+
+  static all<T>(values: (T | LazyPromise<T>)[]): LazyPromise<T[]> {
+    return LazyPromise.fromPromiseCreator(() =>
+      Promise.all(values.map(LazyPromise.resolve))
+    );
+  }
+
+  static race<T>(values: (T | PromiseLike<T>)[]): LazyPromise<T> {
+    return LazyPromise.fromPromiseCreator(() =>
+      Promise.race(values.map(LazyPromise.resolve))
+    );
   }
 }
 
-export interface InvokableLazyPromise<T> extends Promise<T> {
-  (): Promise<T>;
-}
-
-export function lz<T>(
-  promiseCreator: () => Promise<T>
-): InvokableLazyPromise<T> {
-  let promise;
-
-  const evaluate = <InvokableLazyPromise<T>>function() {
-    if (!promise) {
-      promise = promiseCreator();
-    }
-    return promise;
-  };
-
-  evaluate.then = (onFulfilled, onRejected) =>
-    lz(() => evaluate().then(onFulfilled, onRejected));
-
-  evaluate.catch = onRejected => lz(() => evaluate().catch(onRejected));
-
-  evaluate.finally = onFinally => lz(() => evaluate().finally(onFinally));
-
-  return evaluate;
+export function lz<T>(promiseCreator: () => Promise<T>) {
+  return LazyPromise.fromPromiseCreator<T>(promiseCreator);
 }

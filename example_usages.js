@@ -1,3 +1,4 @@
+import {LazyPromise} from "./src/lzPromise";
 
 export function* lazyGenerator(promiseCreator) {
   let yieldPromise = promiseCreator();
@@ -90,6 +91,9 @@ const signIn = async (user, lazySession, lazyPolicy) => {
   }
 
 }
+
+LazyPromise.resolve(1)
+lz(() => LazyPromise.resolve(1))
 
 /* useful iterator functions
 map
