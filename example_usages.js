@@ -1,4 +1,4 @@
-import {LazyPromise} from "./src/lzPromise";
+import {LazyPromise} from "./src/LazyPromise";
 
 export function* lazyGenerator(promiseCreator) {
   let yieldPromise = promiseCreator();
