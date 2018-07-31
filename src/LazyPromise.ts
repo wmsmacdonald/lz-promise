@@ -10,7 +10,7 @@ export class LazyPromise<T> implements Promise<T> {
 
   /**
    * Creates a new LazyPromise with the standard Promise constructor.
-   * @param executor A callback used to initialize the promise. This callback is passed two arguments:
+   * @param executor callback used to initialize the promise. This callback is passed two arguments:
    * a resolve callback used resolve the promise with a value or the result of another promise,
    * and a reject callback used to reject the promise with a provided reason or error. The executor
    * is deferred until .then(), .catch(), or .finally() is called.
@@ -150,10 +150,8 @@ Object.setPrototypeOf(LazyPromise, Promise);
 /**
  * Alias for LazyPromise.fromPromiseCreator
  * Creates a new LazyPromise from a function that returns a Promise.
- * @param promiseCreator Function that the returns the Promise to be deferred until .then(), .catch(),
- * or .finally() is called.
- * @param {() => Promise<T>} promiseCreator
- * @returns {LazyPromise<any>}
+ * @param promiseCreator Function that the returns the Promise to be deferred until .then(), .catch(), or .finally() is called.
+ * @returns {LazyPromise<T>}
  */
 export function lz<T>(promiseCreator: () => Promise<T>) {
   return LazyPromise.fromPromiseCreator<T>(promiseCreator);

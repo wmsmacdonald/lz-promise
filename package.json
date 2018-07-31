@@ -4,7 +4,8 @@
   "description": "Lazy evaluation for asynchronous operations",
   "main": "build/lz_promise.js",
   "scripts": {
-    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "build:doc": "jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > API.md"
   },
   "repository": {
     "type": "git",
@@ -17,12 +18,21 @@
   },
   "homepage": "https://github.com/wmsmacdonald/lz-promise#readme",
   "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.40",
+    "@babel/core": "^7.0.0-beta.41",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.40",
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.55",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.40",
+    "@babel/preset-env": "^7.0.0-beta.40",
+    "@babel/preset-typescript": "^7.0.0-beta.40",
     "@types/chai": "^4.1.4",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.5.3",
     "@types/promise.prototype.finally": "^2.0.2",
     "@types/sinon": "^5.0.1",
     "chai": "^4.1.2",
+    "jsdoc-babel": "^0.4.0-alpha.0",
+    "jsdoc-to-markdown": "^4.0.1",
     "mocha": "^5.2.0",
     "promise.prototype.finally": "^3.1.0",
     "sinon": "^6.1.4",
