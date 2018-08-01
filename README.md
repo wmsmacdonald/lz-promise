@@ -27,7 +27,7 @@ await lazyValue; // > executing
 ### Examples
 #### Early return
 ```javascript
-// build logically parameterized abstrations without worrying about minimizing IO calls
+lib
 async function sendMessageToUser(message, lazyUser) {
   if (message.trim().length === 0) {
     throw new Error('message must have content');

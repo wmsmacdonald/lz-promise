@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "outFile": "build/lz_promise.js",
+    "outDir": "lib",
     "sourceMap": true,
     "lib": [
       "es2018"
     ],
-    "module": "umd",
+    "module": "commonjs",
     "experimentalDecorators": true,
     "target": "es5"
   },
