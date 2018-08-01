@@ -1,5 +1,11 @@
 # lz-promise
 
+![npm](https://img.shields.io/npm/l/express.svg)
+[![Build Status](https://travis-ci.org/wmsmacdonald/lz-promise.svg?branch=master)](https://travis-ci.org/wmsmacdonald/lz-promise)
+[![Coverage Status](https://coveralls.io/repos/github/wmsmacdonald/lz-promise/badge.svg?branch=master)](https://coveralls.io/github/wmsmacdonald/lz-promise?branch=master)
+
+
+
 Lazy evaluation for asynchronous operations to simplify writing
 efficient imperative control flow.
 

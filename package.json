@@ -2,10 +2,16 @@
   "name": "lz-promise",
   "version": "1.0.0",
   "description": "Lazy evaluation for asynchronous operations",
-  "keywords": ["lazy","io","defer", "deferred"],
+  "keywords": [
+    "lazy",
+    "io",
+    "defer",
+    "deferred"
+  ],
   "main": "lib/LazyPromise.js",
   "scripts": {
-    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "test": "nyc mocha -r ts-node/register src/**/*.spec.ts",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build:doc": "bash ./build_README.sh | tee README.md",
     "prepublish": "tsc"
   },
@@ -40,8 +46,21 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.40",
     "@babel/preset-env": "^7.0.0-beta.40",
     "@babel/preset-typescript": "^7.0.0-beta.40",
-    "typescript": "^3.0.1"
+    "typescript": "^3.0.1",
+    "nyc": "^12.0.2",
+    "coveralls": "^3.0.2"
   },
   "dependencies": {
+  },
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "./lib"
+    ],
+    "all": true
   }
 }
