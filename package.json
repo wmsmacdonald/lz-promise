@@ -5,7 +5,7 @@
   "main": "lib/LazyPromise.js",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "build:doc": "jsdoc2md --files 'src/**/*.ts' --configure jsdoc2md.json > API.md",
+    "build:doc": "bash ./build_README.sh | tee README.md",
     "prepublish": "tsc"
   },
   "repository": {

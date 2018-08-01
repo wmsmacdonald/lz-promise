@@ -9,11 +9,11 @@ export class LazyPromise<T> implements Promise<T> {
   private readonly promiseCreator: () => Promise<T>;
 
   /**
-   * Creates a new LazyPromise with the standard Promise constructor.
-   * @param executor callback used to initialize the promise. This callback is passed two arguments:
-   * a resolve callback used resolve the promise with a value or the result of another promise,
-   * and a reject callback used to reject the promise with a provided reason or error. The executor
+   * Creates a new LazyPromise with the standard Promise constructor, except that executor
    * is deferred until .then(), .catch(), or .finally() is called.
+   * @param executor {function} Callback used to initialize the promise. This callback is passed two arguments:
+   * a resolve callback used resolve the promise with a value or the result of another promise,
+   * and a reject callback used to reject the promise with a provided reason or error.
    */
   constructor(
     executor: (
@@ -26,7 +26,7 @@ export class LazyPromise<T> implements Promise<T> {
 
   /**
    * Creates a new LazyPromise from a function that returns a Promise.
-   * @param promiseCreator Function that the returns the Promise to be deferred until .then(), .catch(),
+   * @param promiseCreator {function} Function that the returns the Promise to be deferred until .then(), .catch(),
    * or .finally() is called.
    */
   static fromPromiseCreator<T>(promiseCreator: () => Promise<T>) {
@@ -38,9 +38,9 @@ export class LazyPromise<T> implements Promise<T> {
   /**
    * Calls the executor if it has not been executed.
    * Attaches callbacks for the resolution and/or rejection of the resulting Promise.
-   * @param onFulfilled The callback to execute when the Promise is resolved.
-   * @param onRejected The callback to execute when the Promise is rejected.
-   * @returns A Promise for the completion of which ever callback is executed.
+   * @param onFulfilled {function} The callback to execute when the Promise is resolved.
+   * @param onRejected {function} The callback to execute when the Promise is rejected.
+   * @returns {Promise} A Promise for the completion of which ever callback is executed.
    */
   then<TResult1 = T, TResult2 = never>(
     onFulfilled?:
@@ -61,8 +61,8 @@ export class LazyPromise<T> implements Promise<T> {
   /**
    * Calls the executor if it has not been executed.
    * Attaches a callback for only the rejection of the resulting Promise.
-   * @param onRejected The callback to execute when the Promise is rejected.
-   * @returns A Promise for the completion of the callback.
+   * @param onRejected {function} The callback to execute when the Promise is rejected.
+   * @returns {Promise} A Promise for the completion of the callback.
    */
   catch<TResult = never>(
     onRejected?:
@@ -75,16 +75,16 @@ export class LazyPromise<T> implements Promise<T> {
    * Calls the executor if it has not been executed.
    * Attaches a callback that is invoked when the resulting Promise is settled (fulfilled or rejected). The
    * resolved value cannot be modified from the callback.
-   * @param onFinally The callback to execute when the Promise is settled (fulfilled or rejected).
-   * @returns A Promise for the completion of the callback.
+   * @param onFinally {function} The callback to execute when the Promise is settled (fulfilled or rejected).
+   * @returns {Promise} A Promise for the completion of the callback.
    */
   finally(onFinally?: (() => void) | undefined | null): Promise<T> { return this.then().finally(onFinally); }
 
   /**
    * Creates a new resolved LazyPromise for the provided value.
    * Equivalent to Promise.resolve() because value is already executed
-   * @param value The value which is resolved
-   * @returns A promise whose internal state matches the provided promise.
+   * @param value {any} The value which is resolved
+   * @returns {Promise} A promise whose internal state matches the provided value.
    */
   static resolve<T>(value?: T | LazyPromise<T>): LazyPromise<T> {
     return LazyPromise.fromPromiseCreator(() => Promise.resolve(value));
@@ -93,8 +93,8 @@ export class LazyPromise<T> implements Promise<T> {
   /**
    * Creates a new rejected LazyPromise for the provided value.
    * Equivalent to Promise.reject() because value is already executed
-   * @param reason The value which is rejected
-   * @returns A promise whose internal state matches the provided promise.
+   * @param reason {any} The value which is rejected
+   * @returns {LazyPromise} A promise whose internal state matches the provided value.
    */
   static reject<T = never>(reason?: any): LazyPromise<T> {
     return LazyPromise.fromPromiseCreator(() => Promise.reject(reason));
@@ -103,8 +103,8 @@ export class LazyPromise<T> implements Promise<T> {
   /**
    * Creates a LazyPromise that, when .then(), .catch(), or .finally() is called, is resolved with an
    * array of results when all of the provided Promises resolve, or rejected when any Promise is rejected.
-   * @param values An iterator of Promises, values, or LazyPromises
-   * @returns A new LazyPromise.
+   * @param values {Iterable} An iterator of Promises, values, or LazyPromises
+   * @returns {LazyPromise} A new LazyPromise.
    */
   static all<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>, T10 | PromiseLike<T10>]): LazyPromise<[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]>;
   static all<T1, T2, T3, T4, T5, T6, T7, T8, T9>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike <T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>]): LazyPromise<[T1, T2, T3, T4, T5, T6, T7, T8, T9]>;
@@ -123,8 +123,8 @@ export class LazyPromise<T> implements Promise<T> {
   /**
    * Creates a LazyPromise that, when .then(), .catch(), or .finally() is called, is resolved or rejected
    * when any of the provided Promises are resolved or rejected that Promise's value.
-   * @param values An iterator of Promises, values, or LazyPromises.
-   * @returns A new LazyPromise.
+   * @param values {Iterable} An iterator of Promises, values, or LazyPromises.
+   * @returns {LazyPromise} A new LazyPromise.
    */
   static race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>, T10 | PromiseLike<T10>]): LazyPromise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
   static race<T1, T2, T3, T4, T5, T6, T7, T8, T9>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>]): LazyPromise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
@@ -148,10 +148,9 @@ Object.setPrototypeOf(LazyPromise.prototype, Promise.prototype);
 Object.setPrototypeOf(LazyPromise, Promise);
 
 /**
- * Alias for LazyPromise.fromPromiseCreator
- * Creates a new LazyPromise from a function that returns a Promise.
- * @param promiseCreator Function that the returns the Promise to be deferred until .then(), .catch(), or .finally() is called.
- * @returns {LazyPromise<T>}
+ * Alias for LazyPromise.fromPromiseCreator that creates a new LazyPromise from a function that returns a Promise.
+ * @param promiseCreator {function} Function that the returns the Promise to be deferred until .then(), .catch(), or .finally() is called.
+ * @returns {LazyPromise}
  */
 export function lz<T>(promiseCreator: () => Promise<T>) {
   return LazyPromise.fromPromiseCreator<T>(promiseCreator);

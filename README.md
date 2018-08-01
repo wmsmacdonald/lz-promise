@@ -27,7 +27,6 @@ await lazyValue; // > executing
 ### Examples
 #### Early return
 ```javascript
-lib
 async function sendMessageToUser(message, lazyUser) {
   if (message.trim().length === 0) {
     throw new Error('message must have content');
@@ -77,7 +76,7 @@ async function sendLastMessageToAllUsers(lazyLastMessage, users) {
 }
 ```
   
-
+# API
 ## Classes
 
 <dl>
@@ -88,9 +87,8 @@ async function sendLastMessageToAllUsers(lazyLastMessage, users) {
 ## Functions
 
 <dl>
-<dt><a href="#lz">lz(promiseCreator)</a> ⇒ <code>LazyPromise.&lt;T&gt;</code></dt>
-<dd><p>Alias for LazyPromise.fromPromiseCreator
-Creates a new LazyPromise from a function that returns a Promise.</p></dd>
+<dt><a href="#lz">lz(promiseCreator)</a> ⇒ <code><a href="#LazyPromise">LazyPromise</a></code></dt>
+<dd><p>Alias for LazyPromise.fromPromiseCreator that creates a new LazyPromise from a function that returns a Promise.</p></dd>
 </dl>
 
 <a name="LazyPromise"></a>
@@ -101,66 +99,67 @@ Creates a new LazyPromise from a function that returns a Promise.</p></dd>
 * [LazyPromise](#LazyPromise)
     * [new LazyPromise(executor)](#new_LazyPromise_new)
     * _instance_
-        * [.then(onFulfilled, onRejected)](#LazyPromise+then) ⇒
-        * [.catch(onRejected)](#LazyPromise+catch) ⇒
-        * [.finally(onFinally)](#LazyPromise+finally) ⇒
+        * [.then(onFulfilled, onRejected)](#LazyPromise+then) ⇒ <code>Promise</code>
+        * [.catch(onRejected)](#LazyPromise+catch) ⇒ <code>Promise</code>
+        * [.finally(onFinally)](#LazyPromise+finally) ⇒ <code>Promise</code>
     * _static_
         * [.fromPromiseCreator(promiseCreator)](#LazyPromise.fromPromiseCreator)
-        * [.resolve(value)](#LazyPromise.resolve) ⇒
-        * [.reject(reason)](#LazyPromise.reject) ⇒
-        * [.all(values)](#LazyPromise.all) ⇒
-        * [.race(values)](#LazyPromise.race) ⇒
+        * [.resolve(value)](#LazyPromise.resolve) ⇒ <code>Promise</code>
+        * [.reject(reason)](#LazyPromise.reject) ⇒ [<code>LazyPromise</code>](#LazyPromise)
+        * [.all(values)](#LazyPromise.all) ⇒ [<code>LazyPromise</code>](#LazyPromise)
+        * [.race(values)](#LazyPromise.race) ⇒ [<code>LazyPromise</code>](#LazyPromise)
 
 <a name="new_LazyPromise_new"></a>
 
 ### new LazyPromise(executor)
-<p>Creates a new LazyPromise with the standard Promise constructor.</p>
+<p>Creates a new LazyPromise with the standard Promise constructor, except that executor
+is deferred until .then(), .catch(), or .finally() is called.</p>
 
 
-| Param | Description |
-| --- | --- |
-| executor | <p>A callback used to initialize the promise. This callback is passed two arguments: a resolve callback used resolve the promise with a value or the result of another promise, and a reject callback used to reject the promise with a provided reason or error. The executor is deferred until .then(), .catch(), or .finally() is called.</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| executor | <code>function</code> | <p>Callback used to initialize the promise. This callback is passed two arguments: a resolve callback used resolve the promise with a value or the result of another promise, and a reject callback used to reject the promise with a provided reason or error.</p> |
 
 <a name="LazyPromise+then"></a>
 
-### LazyPromise.then(onFulfilled, onRejected) ⇒
+### lazyPromise.then(onFulfilled, onRejected) ⇒ <code>Promise</code>
 <p>Calls the executor if it has not been executed.
 Attaches callbacks for the resolution and/or rejection of the resulting Promise.</p>
 
 **Kind**: instance method of [<code>LazyPromise</code>](#LazyPromise)  
-**Returns**: <p>A Promise for the completion of which ever callback is executed.</p>  
+**Returns**: <code>Promise</code> - <p>A Promise for the completion of which ever callback is executed.</p>  
 
-| Param | Description |
-| --- | --- |
-| onFulfilled | <p>The callback to execute when the Promise is resolved.</p> |
-| onRejected | <p>The callback to execute when the Promise is rejected.</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| onFulfilled | <code>function</code> | <p>The callback to execute when the Promise is resolved.</p> |
+| onRejected | <code>function</code> | <p>The callback to execute when the Promise is rejected.</p> |
 
 <a name="LazyPromise+catch"></a>
 
-### LazyPromise.catch(onRejected) ⇒
+### lazyPromise.catch(onRejected) ⇒ <code>Promise</code>
 <p>Calls the executor if it has not been executed.
 Attaches a callback for only the rejection of the resulting Promise.</p>
 
 **Kind**: instance method of [<code>LazyPromise</code>](#LazyPromise)  
-**Returns**: <p>A Promise for the completion of the callback.</p>  
+**Returns**: <code>Promise</code> - <p>A Promise for the completion of the callback.</p>  
 
-| Param | Description |
-| --- | --- |
-| onRejected | <p>The callback to execute when the Promise is rejected.</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| onRejected | <code>function</code> | <p>The callback to execute when the Promise is rejected.</p> |
 
 <a name="LazyPromise+finally"></a>
 
-### LazyPromise.finally(onFinally) ⇒
+### lazyPromise.finally(onFinally) ⇒ <code>Promise</code>
 <p>Calls the executor if it has not been executed.
 Attaches a callback that is invoked when the resulting Promise is settled (fulfilled or rejected). The
 resolved value cannot be modified from the callback.</p>
 
 **Kind**: instance method of [<code>LazyPromise</code>](#LazyPromise)  
-**Returns**: <p>A Promise for the completion of the callback.</p>  
+**Returns**: <code>Promise</code> - <p>A Promise for the completion of the callback.</p>  
 
-| Param | Description |
-| --- | --- |
-| onFinally | <p>The callback to execute when the Promise is settled (fulfilled or rejected).</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| onFinally | <code>function</code> | <p>The callback to execute when the Promise is settled (fulfilled or rejected).</p> |
 
 <a name="LazyPromise.fromPromiseCreator"></a>
 
@@ -169,71 +168,70 @@ resolved value cannot be modified from the callback.</p>
 
 **Kind**: static method of [<code>LazyPromise</code>](#LazyPromise)  
 
-| Param | Description |
-| --- | --- |
-| promiseCreator | <p>Function that the returns the Promise to be deferred until .then(), .catch(), or .finally() is called.</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| promiseCreator | <code>function</code> | <p>Function that the returns the Promise to be deferred until .then(), .catch(), or .finally() is called.</p> |
 
 <a name="LazyPromise.resolve"></a>
 
-### LazyPromise.resolve(value) ⇒
+### LazyPromise.resolve(value) ⇒ <code>Promise</code>
 <p>Creates a new resolved LazyPromise for the provided value.
 Equivalent to Promise.resolve() because value is already executed</p>
 
 **Kind**: static method of [<code>LazyPromise</code>](#LazyPromise)  
-**Returns**: <p>A promise whose internal state matches the provided promise.</p>  
+**Returns**: <code>Promise</code> - <p>A promise whose internal state matches the provided value.</p>  
 
-| Param | Description |
-| --- | --- |
-| value | <p>The value which is resolved</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>any</code> | <p>The value which is resolved</p> |
 
 <a name="LazyPromise.reject"></a>
 
-### LazyPromise.reject(reason) ⇒
+### LazyPromise.reject(reason) ⇒ [<code>LazyPromise</code>](#LazyPromise)
 <p>Creates a new rejected LazyPromise for the provided value.
 Equivalent to Promise.reject() because value is already executed</p>
 
 **Kind**: static method of [<code>LazyPromise</code>](#LazyPromise)  
-**Returns**: <p>A promise whose internal state matches the provided promise.</p>  
+**Returns**: [<code>LazyPromise</code>](#LazyPromise) - <p>A promise whose internal state matches the provided value.</p>  
 
-| Param | Description |
-| --- | --- |
-| reason | <p>The value which is rejected</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| reason | <code>any</code> | <p>The value which is rejected</p> |
 
 <a name="LazyPromise.all"></a>
 
-### LazyPromise.all(values) ⇒
+### LazyPromise.all(values) ⇒ [<code>LazyPromise</code>](#LazyPromise)
 <p>Creates a LazyPromise that, when .then(), .catch(), or .finally() is called, is resolved with an
 array of results when all of the provided Promises resolve, or rejected when any Promise is rejected.</p>
 
 **Kind**: static method of [<code>LazyPromise</code>](#LazyPromise)  
-**Returns**: <p>A new LazyPromise.</p>  
+**Returns**: [<code>LazyPromise</code>](#LazyPromise) - <p>A new LazyPromise.</p>  
 
-| Param | Description |
-| --- | --- |
-| values | <p>An iterator of Promises, values, or LazyPromises</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| values | <code>Iterable</code> | <p>An iterator of Promises, values, or LazyPromises</p> |
 
 <a name="LazyPromise.race"></a>
 
-### LazyPromise.race(values) ⇒
+### LazyPromise.race(values) ⇒ [<code>LazyPromise</code>](#LazyPromise)
 <p>Creates a LazyPromise that, when .then(), .catch(), or .finally() is called, is resolved or rejected
 when any of the provided Promises are resolved or rejected that Promise's value.</p>
 
 **Kind**: static method of [<code>LazyPromise</code>](#LazyPromise)  
-**Returns**: <p>A new LazyPromise.</p>  
+**Returns**: [<code>LazyPromise</code>](#LazyPromise) - <p>A new LazyPromise.</p>  
 
-| Param | Description |
-| --- | --- |
-| values | <p>An iterator of Promises, values, or LazyPromises.</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| values | <code>Iterable</code> | <p>An iterator of Promises, values, or LazyPromises.</p> |
 
 <a name="lz"></a>
 
-## lz(promiseCreator) ⇒ <code>LazyPromise.&lt;T&gt;</code>
-<p>Alias for LazyPromise.fromPromiseCreator
-Creates a new LazyPromise from a function that returns a Promise.</p>
+## lz(promiseCreator) ⇒ [<code>LazyPromise</code>](#LazyPromise)
+<p>Alias for LazyPromise.fromPromiseCreator that creates a new LazyPromise from a function that returns a Promise.</p>
 
 **Kind**: global function  
 
-| Param | Description |
-| --- | --- |
-| promiseCreator | <p>Function that the returns the Promise to be deferred until .then(), .catch(), or .finally() is called.</p> |
+| Param | Type | Description |
+| --- | --- | --- |
+| promiseCreator | <code>function</code> | <p>Function that the returns the Promise to be deferred until .then(), .catch(), or .finally() is called.</p> |
 
