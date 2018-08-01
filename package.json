@@ -1,6 +1,6 @@
 {
   "name": "lz-promise",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lazy evaluation for asynchronous operations",
   "keywords": [
     "lazy",
