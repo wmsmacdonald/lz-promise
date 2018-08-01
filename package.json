@@ -2,6 +2,7 @@
   "name": "lz-promise",
   "version": "1.0.0",
   "description": "Lazy evaluation for asynchronous operations",
+  "keywords": ["lazy","io","defer", "deferred"],
   "main": "lib/LazyPromise.js",
   "scripts": {
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
